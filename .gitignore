@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.xlsx
+*.pdf
+!docs/**
+.env
+.env.*
+!.env.example
+.DS_Store
+.tmp/
+dist/
+node_modules/
+.idea/
+.vscode/
+*.log

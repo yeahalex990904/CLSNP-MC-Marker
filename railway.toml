@@ -1,0 +1,8 @@
+# Optional Railway config — root Dockerfile serves UI + API
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/api/health"
+restartPolicyType = "ON_FAILURE"
