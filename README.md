@@ -1,6 +1,6 @@
 # CLSNP MC Marker
 
-Standalone web app for CLSNP maths colleagues: paste an MC answer key, upload a **whole-class scanned PDF** of CLSNP MC bubble sheets, download a coloured Excel (`.xlsx`).
+Standalone web app for CLSNP maths colleagues: enter an MC answer key (or upload the official solution PDF), upload a **whole-class scanned PDF** of CLSNP MC bubble sheets, download a coloured Excel (`.xlsx`).
 
 **No Google Cloud, no Grok Bot, no secrets required for colleagues** — they open the public URL and mark.
 
@@ -10,8 +10,21 @@ Branding / title: **CLSNP MC Marker**.
 
 | Input | Output |
 |-------|--------|
-| Answer key (`1C 2D 3A…` / letter string / CSV) | Coloured `.xlsx` |
+| Answer key: N boxes of A/B/C/D, **or** an official solution PDF | Coloured `.xlsx` |
 | Whole-class scan PDF | One sheet per class (or one sheet if single class) |
+
+## Answer key
+
+Teachers choose one way to enter the key:
+
+1. **Manual.** Type the number of questions. The page shows that many A/B/C/D boxes.
+2. **Solution PDF.** Upload the official solution. `POST /api/parse-key` (file field `pdf`) reads numbered answers (`1. C`, `1C 2D`, `第1題：C`) or an answer table and returns:
+
+```json
+{"n": 4, "key": ["C", "D", "", "A"], "review": [3], "warnings": ["未能讀取題號 3，已留空請填寫。 …"], "partial": true}
+```
+
+Empty strings and `review` are items to check. Conflicting, missing, or unnumbered letters are left blank for editing — the app does not guess. Text-based solution PDFs are read directly. A scan with no text layer is rejected, or OCR'd when the `tesseract` binary is installed, instead of guessing. A pasted `answer_key` form field still parses as before. After the boxes are complete, upload the class scan and download Excel. Scoring still treats `B` and `b` as the same letter.
 
 Excel columns (F6 UT2 style): **Class | Class No. | Name | Q1…Qn | Total (/N)**  
 + correct-answer row + **% correct** + **class average**.
@@ -44,7 +57,7 @@ clsnp-mc-marker/
     omr/              ← ported F6 UT2 OpenCV pipeline
       grid.py detect.py detect2.py refine.py
       measure.py classify.py header.py
-      pdf_pages.py key_parse.py build_xlsx.py
+      pdf_pages.py key_parse.py solution_key.py build_xlsx.py
       pipeline.py template.json
 ```
 

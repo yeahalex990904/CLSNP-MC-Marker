@@ -20,7 +20,7 @@ body {
   min-height: 100vh;
 }
 .top {
-  max-width: 720px;
+  max-width: 920px;
   margin: 0 auto;
   padding: 28px 20px 8px;
 }
@@ -37,7 +37,7 @@ body {
 h1 { margin: 0; font-size: 1.55rem; color: var(--brand); }
 .tagline { margin: 4px 0 0; color: var(--muted); font-size: 0.95rem; }
 .card {
-  max-width: 720px;
+  max-width: 920px;
   margin: 12px auto 24px;
   background: var(--card);
   border: 1px solid var(--line);
@@ -93,8 +93,53 @@ button.secondary {
   border: 1px solid var(--line);
   font-size: 0.92rem;
 }
+.status { white-space: pre-wrap; }
 .status.error { background: #fff1f2; border-color: #f0b4bb; color: #8a1f2b; }
 .status.ok { background: #eefaf0; border-color: #a8d5b0; }
+.status.warn { background: #fffdf3; border-color: #e0c96a; }
+.key-entry { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px 8px; margin: 0 0 16px; }
+.key-entry legend { font-weight: 700; padding: 0 6px; }
+.field.inner { margin-top: 10px; }
+.modes { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 10px; }
+.modes label {
+  flex: 1 1 220px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  background: #fafcfe;
+}
+.modes label:has(input:checked) { border-color: var(--brand); background: #eef5fb; }
+.modes input { margin-right: 6px; }
+#n_questions { max-width: 180px; }
+#mode-pdf button { margin: 4px 0 8px; }
+#mode-pdf .hint { display: block; }
+.key-boxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 8px;
+  margin: 8px 0;
+}
+.qcell {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 6px 8px;
+  background: #fafcfe;
+}
+.qcell.review { background: var(--warn); border-color: #e0c96a; }
+.qnum { display: block; font-size: 0.75rem; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+.choices { display: flex; gap: 4px; }
+.choices button {
+  flex: 1;
+  padding: 6px 0;
+  background: #fff;
+  color: var(--brand);
+  border: 1px solid var(--line);
+  font-weight: 700;
+}
+.choices button[aria-pressed="true"] { background: var(--brand); color: #fff; border-color: var(--brand); }
+.choices button:hover { background: #e7f0f8; color: var(--brand); }
+.choices button[aria-pressed="true"]:hover { background: var(--accent); color: #fff; }
 .key-preview {
   margin-top: 10px;
   padding: 10px 12px;
@@ -106,7 +151,7 @@ button.secondary {
   font-size: 0.85rem;
 }
 footer {
-  max-width: 720px;
+  max-width: 920px;
   margin: 0 auto 40px;
   padding: 0 20px;
   color: var(--muted);
