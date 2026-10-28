@@ -19,7 +19,7 @@
 
   <main class="card">
     <ol class="steps">
-      <li>貼上答案 <span class="en">Paste answer key</span></li>
+      <li>輸入答案或上載答案 PDF <span class="en">Enter the key, or upload a solution PDF</span></li>
       <li>上載整班掃描 PDF <span class="en">Upload whole-class scan PDF</span></li>
       <li>下載 Excel 結果 <span class="en">Download coloured .xlsx</span></li>
     </ol>
@@ -30,27 +30,54 @@
         <input type="text" id="exam_name" name="exam_name" placeholder="e.g. F4 UT2 MC / 中四 測驗二" maxlength="80" />
       </label>
 
-      <label class="field">
-        <span>答案 Answer key <abbr title="required">*</abbr></span>
-        <textarea id="answer_key" name="answer_key" rows="4" required
-          placeholder="1C 2D 3A 4B …   或 / or   CDAB…   或每行一字母 one letter per line"></textarea>
-        <small class="hint">接受 B/b。格式：<code>1A 2B 3C</code>、純字母串、或 CSV。<span class="en">B/b accepted. Formats: numbered pairs, letter string, or CSV.</span></small>
-      </label>
+      <fieldset class="field key-entry">
+        <legend>答案 Answer key <abbr title="required">*</abbr></legend>
+        <div class="modes" role="radiogroup" aria-label="How to enter the answer key">
+          <label>
+            <input type="radio" name="key_mode" value="manual" checked />
+            人手輸入 <span class="en">Enter manually</span>
+          </label>
+          <label>
+            <input type="radio" name="key_mode" value="pdf" />
+            上載答案 PDF <span class="en">Upload solution PDF</span>
+          </label>
+        </div>
+
+        <div id="mode-manual">
+          <small class="hint">輸入題數，然後在每格點選正確答案 A/B/C/D。<span class="en">Set how many questions, then pick A/B/C/D in each box.</span></small>
+        </div>
+
+        <div id="mode-pdf" hidden>
+          <label class="field inner">
+            <span>官方答案 PDF <span class="en">Official solution PDF</span></span>
+            <input type="file" id="solution_pdf" accept="application/pdf,.pdf" />
+          </label>
+          <button type="button" id="extract-btn">讀取答案 · Extract key</button>
+          <small class="hint">支援題號加答案（1. C、1C 2D）或答案表格。未能確定的題目會留空並標黃，不會臆造答案。讀取後仍可修改。<span class="en">Numbered keys or an answer table. Unclear items stay blank (yellow) for you to edit — nothing is guessed.</span></small>
+        </div>
+
+        <label class="field inner">
+          <span>題數 Number of questions</span>
+          <input type="number" id="n_questions" min="1" max="100" step="1" inputmode="numeric" placeholder="例如 30 / e.g. 30" />
+        </label>
+        <div id="key-boxes" class="key-boxes" hidden></div>
+        <p id="review-legend" class="hint" hidden>黃格表示未能確定，請點選 A–D。<span class="en">Yellow boxes need a choice — click A–D.</span></p>
+        <p id="key-summary" class="hint" hidden></p>
+        <small class="hint">批改時 B 與 b 視作同一選項。<span class="en">When scoring, B and b are the same letter.</span></small>
+      </fieldset>
 
       <label class="field">
         <span>掃描 PDF Scanned PDF <abbr title="required">*</abbr></span>
-        <input type="file" id="pdf" name="pdf" accept="application/pdf,.pdf" required />
+        <input type="file" id="pdf" name="pdf" accept="application/pdf,.pdf" />
         <small class="hint">須為真實掃描（整班一檔）。不會虛構分數。<span class="en">Real scan required — never invents marks.</span></small>
       </label>
 
       <div class="actions">
         <button type="submit" id="submit-btn">開始批改 · Mark</button>
-        <button type="button" id="parse-btn" class="secondary">檢查答案 · Check key</button>
       </div>
     </form>
 
     <div id="status" class="status" hidden></div>
-    <pre id="key-preview" class="key-preview" hidden></pre>
   </main>
 
   <footer>

@@ -20,6 +20,7 @@ from fastapi.staticfiles import StaticFiles
 
 from omr.key_parse import parse_answer_key
 from omr.pipeline import mark_pdf
+from omr.solution_key import SolutionKeyError, extract_key_from_pdf
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("clsnp-mc-marker")
@@ -106,12 +107,54 @@ async def mark(
 
 
 @app.post("/api/parse-key")
-async def parse_key(answer_key: str = Form(...)):
+async def parse_key(
+    answer_key: str = Form(""),
+    pdf: UploadFile | None = File(None),
+):
+    """Parse a pasted key, or extract one from an official solution PDF.
+
+    PDF responses may be partial: ``key`` slots are ``""`` and ``review`` lists
+    the question numbers the teacher must check. Answers are never guessed.
+    """
+    filename = (pdf.filename or "").strip() if pdf is not None else ""
+    if filename:
+        if not filename.lower().endswith(".pdf"):
+            raise HTTPException(400, "Only PDF solution files are accepted")
+        data = await pdf.read()
+        if not data:
+            raise HTTPException(400, "Empty solution PDF")
+        if len(data) > 30 * 1024 * 1024:
+            raise HTTPException(400, "Solution PDF too large (max 30 MB)")
+        if not data.startswith(b"%PDF"):
+            raise HTTPException(400, "File is not a PDF")
+        try:
+            extracted = extract_key_from_pdf(data)
+        except SolutionKeyError as exc:
+            raise HTTPException(422, str(exc)) from exc
+        except Exception as exc:
+            log.exception("parse-key pdf failed")
+            raise HTTPException(
+                422,
+                "未能讀取答案 PDF。請改用人手輸入，系統不會猜測答案。"
+                f" Could not read the solution PDF ({exc}).",
+            ) from exc
+        return extracted.as_dict()
+
+    if not (answer_key or "").strip():
+        raise HTTPException(400, "Provide an answer key or a solution PDF")
     try:
         key = parse_answer_key(answer_key)
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
-    return {"ok": True, "n": len(key), "key": key}
+    return {
+        "ok": True,
+        "n": len(key),
+        "key": key,
+        "review": [],
+        "warnings": [],
+        "partial": False,
+        "source": "text",
+    }
 
 
 # Static UI last so /api/* wins
