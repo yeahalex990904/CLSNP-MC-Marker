@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CLSNP MC Marker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <div class="badge">CLSNP</div>
+      <div>
+        <h1>CLSNP MC Marker</h1>
+        <p class="tagline">選擇題答題紙自動批改 · MC bubble-sheet marker</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="card">
+    <ol class="steps">
+      <li>貼上答案 <span class="en">Paste answer key</span></li>
+      <li>上載整班掃描 PDF <span class="en">Upload whole-class scan PDF</span></li>
+      <li>下載 Excel 結果 <span class="en">Download coloured .xlsx</span></li>
+    </ol>
+
+    <form id="mark-form">
+      <label class="field">
+        <span>考試名稱 <span class="en">Exam name</span>（選填 optional）</span>
+        <input type="text" id="exam_name" name="exam_name" placeholder="e.g. F4 UT2 MC / 中四 測驗二" maxlength="80" />
+      </label>
+
+      <label class="field">
+        <span>答案 Answer key <abbr title="required">*</abbr></span>
+        <textarea id="answer_key" name="answer_key" rows="4" required
+          placeholder="1C 2D 3A 4B …   或 / or   CDAB…   或每行一字母 one letter per line"></textarea>
+        <small class="hint">接受 B/b。格式：<code>1A 2B 3C</code>、純字母串、或 CSV。<span class="en">B/b accepted. Formats: numbered pairs, letter string, or CSV.</span></small>
+      </label>
+
+      <label class="field">
+        <span>掃描 PDF Scanned PDF <abbr title="required">*</abbr></span>
+        <input type="file" id="pdf" name="pdf" accept="application/pdf,.pdf" required />
+        <small class="hint">須為真實掃描（整班一檔）。不會虛構分數。<span class="en">Real scan required — never invents marks.</span></small>
+      </label>
+
+      <div class="actions">
+        <button type="submit" id="submit-btn">開始批改 · Mark</button>
+        <button type="button" id="parse-btn" class="secondary">檢查答案 · Check key</button>
+      </div>
+    </form>
+
+    <div id="status" class="status" hidden></div>
+    <pre id="key-preview" class="key-preview" hidden></pre>
+  </main>
+
+  <footer>
+    <p>綠 green = 正確 · 紅 red = 錯/空白/雙塗 · 黃 yellow = 不清（請人手填）</p>
+    <p class="muted">No Google Cloud / Grok Bot required. OpenCV OMR · CLSNP maths</p>
+  </footer>
+
+  <script>
+    window.CLSNP_API_BASE = window.CLSNP_API_BASE || "";
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
